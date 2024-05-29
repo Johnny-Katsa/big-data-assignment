@@ -19,7 +19,7 @@ df.printSchema()
 df.show(5)
 
 # Storing combined CSV
-df.write.csv(f"hdfs://master:9000/csv/Crime_Data")
+df.write.csv(f"hdfs://master:9000/csv/Crime_Data", header=True)
 
 # Converting to parquet
 # df.write.parquet(f"/parquet/Crime_Data")
