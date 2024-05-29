@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-DATA_CSV_PATH = "hdfs://master:9000/data/Crime_Data"
+DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 
 #############################
 # Preparation
