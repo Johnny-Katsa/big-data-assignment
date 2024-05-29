@@ -1,4 +1,3 @@
-import pyfiglet
 from pyspark.sql import SparkSession
 
 DATA_PARQUET_PATH = "hdfs://master:9000/parquet/Crime_Data"
@@ -9,8 +8,6 @@ DATA_PARQUET_PATH = "hdfs://master:9000/parquet/Crime_Data"
 spark = SparkSession.builder \
     .appName("Query 1 - SQL API") \
     .getOrCreate()
-
-print(pyfiglet.figlet_format(spark.sparkContext.appName))
 
 df = spark.read.parquet(DATA_PARQUET_PATH, header=True, inferSchema=True)
 
