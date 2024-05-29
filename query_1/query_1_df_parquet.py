@@ -8,7 +8,7 @@ DATA_PARQUET_PATH = "hdfs://master:9000/parquet/Crime_Data"
 # Preparation
 #############################
 spark = SparkSession.builder \
-    .appName("Query 1 - DataFrame API") \
+    .appName("Query 1 - DataFrame API - PARQUET") \
     .getOrCreate()
 
 df = spark.read.parquet(DATA_PARQUET_PATH, header=True, inferSchema=True)

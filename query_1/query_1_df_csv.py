@@ -8,7 +8,7 @@ DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 # Preparation
 #############################
 spark = SparkSession.builder \
-    .appName("Query 1 - DataFrame API") \
+    .appName("Query 1 - DataFrame API - CSV") \
     .getOrCreate()
 
 df = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
