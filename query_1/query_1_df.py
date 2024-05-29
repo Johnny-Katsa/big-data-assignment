@@ -1,18 +1,24 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.window import Window
+from config import DATA_PARQUET_PATH
+from helper import intro_print, outro_print
 
-DATA_PARQUET_PATH = "parquet/Crime_Data"
-
+#############################
+# Preparation
+#############################
 spark = SparkSession.builder \
     .appName("Query 1 - DataFrame API") \
     .getOrCreate()
 
-df = spark.read.parquet(f"hdfs://master:9000/{DATA_PARQUET_PATH}", header=True, inferSchema=True)
+intro_print(spark.sparkContext.appName)
 
-print(f"###########################")
-print(f"Cols of the df: {df.columns}")
+df = spark.read.parquet(DATA_PARQUET_PATH, header=True, inferSchema=True)
 
+
+##############################
+# Querying
+##############################
 window_spec = Window.partitionBy("year").orderBy(col("crime_total").desc())
 
 (df
@@ -26,5 +32,6 @@ window_spec = Window.partitionBy("year").orderBy(col("crime_total").desc())
  .filter("rank <= 3")
  .show(1000))
 
+outro_print()
 spark.stop()
 
