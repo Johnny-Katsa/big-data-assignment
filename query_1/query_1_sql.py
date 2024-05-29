@@ -1,6 +1,7 @@
+import pyfiglet
 from pyspark.sql import SparkSession
-from config import DATA_PARQUET_PATH
-from helper import intro_print, outro_print
+
+DATA_PARQUET_PATH = "hdfs://master:9000/parquet/Crime_Data"
 
 #############################
 # Preparation
@@ -9,7 +10,7 @@ spark = SparkSession.builder \
     .appName("Query 1 - SQL API") \
     .getOrCreate()
 
-intro_print(spark.sparkContext.appName)
+print(pyfiglet.figlet_format(spark.sparkContext.appName))
 
 df = spark.read.parquet(DATA_PARQUET_PATH, header=True, inferSchema=True)
 
@@ -36,6 +37,6 @@ SELECT * FROM rankings WHERE ranking <= 3 ORDER BY year ASC, ranking ASC
 result = spark.sql(query)
 result.show(1000)
 
-outro_print()
+
 spark.stop()
 
