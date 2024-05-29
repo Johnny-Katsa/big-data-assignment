@@ -22,11 +22,10 @@ df.show(5)
 df.write.csv(f"hdfs://master:9000/csv/Crime_Data", header=True)
 
 # Converting to parquet
-# df.write.parquet(f"/parquet/Crime_Data")
+df.write.parquet(f"/parquet/Crime_Data")
 
 # Print schema and some data of the Parquet file to verify correct conversion
-# df_parquet = spark.read.parquet(f"hdfs://master:9000/parquet/Crime_Data")
-df_parquet = spark.read.csv(f"hdfs://master:9000/csv/Crime_Data", header=True, inferSchema=True)
+df_parquet = spark.read.parquet(f"hdfs://master:9000/parquet/Crime_Data")
 print(f"################### Schema of dataset after Parquet conversion ####################### ")
 df_parquet.printSchema()
 df_parquet.show(5)
