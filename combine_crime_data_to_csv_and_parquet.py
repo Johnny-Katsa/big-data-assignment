@@ -18,12 +18,15 @@ print(f"################### Schema of dataset ####################### ")
 df.printSchema()
 df.show(5)
 
+# Storing combined CSV
+df.write.csv(f"{DATA_PATH}Crime_Data.csv")
+
 # Converting to parquet
-df.write.parquet(f"/parquet/Crime_Data")
+# df.write.parquet(f"/parquet/Crime_Data")
 
 # Print schema and some data of the Parquet file to verify correct conversion
-df_parquet = spark.read.parquet(f"hdfs://master:9000/parquet/Crime_Data")
-
+# df_parquet = spark.read.parquet(f"hdfs://master:9000/parquet/Crime_Data")
+df_parquet = spark.read.csv(f"hdfs://master:9000/{DATA_PATH}Crime_Data.csv")
 print(f"################### Schema of dataset after Parquet conversion ####################### ")
 df_parquet.printSchema()
 df_parquet.show(5)

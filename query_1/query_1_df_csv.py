@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.window import Window
 
-DATA_PARQUET_PATH = "hdfs://master:9000/parquet/Crime_Data"
+DATA_CSV_PATH = "hdfs://master:9000/data/Crime_Data.csv"
 
 #############################
 # Preparation
@@ -11,7 +11,7 @@ spark = SparkSession.builder \
     .appName("Query 1 - DataFrame API") \
     .getOrCreate()
 
-df = spark.read.csv(DATA_PARQUET_PATH, header=True, inferSchema=True)
+df = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
 
 
 ##############################
