@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 
-DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
+CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
+INCOME_DATA_CSV_PATH = "hdfs://master:9000/data/LA_income_2015.csv"
+REVGEO_DATA_CSV_PATH = "hdfs://master:9000/data/revgecoding.csv"
 
 #############################################################
 # Defining the mappings for victim descents and their coding.
@@ -26,9 +28,9 @@ spark = SparkSession.builder \
     .appName("Query 3 - SQL API") \
     .getOrCreate()
 
-df_crimes = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
-df_codes = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
-df_incomes = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
+df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
+df_codes = spark.read.csv(REVGEO_DATA_CSV_PATH, header=True, inferSchema=True)
+df_incomes = spark.read.csv(INCOME_DATA_CSV_PATH, header=True, inferSchema=True)
 
 df_crimes.createOrReplaceTempView("crime_data")
 df_codes.createOrReplaceTempView("revgeo")
