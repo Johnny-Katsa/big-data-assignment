@@ -4,6 +4,7 @@ from io import StringIO
 
 DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 
+
 ###############################################
 # Mapping methods
 ###############################################
@@ -11,6 +12,7 @@ def parse_csv(line):
     sio = StringIO(line)
     reader = csv.reader(sio)
     return next(reader)
+
 
 def time_to_segment(time):
     try:
@@ -51,7 +53,7 @@ results = (rdd
            .map(parse_csv)
            .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
            .map(lambda row: time_to_segment(row[time_occ_index]))
-	   .countByValue())
+           .countByValue())
 
 # We could have done this since we only have 4 results. No need for distributed computing.
 # However, we will do the sorting again using RDD just for demonstration purposes.
