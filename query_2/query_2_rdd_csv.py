@@ -1,7 +1,16 @@
 from pyspark.sql import SparkSession
+import csv
+from io import StringIO
 
 DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 
+###############################################
+# Mapping methods
+###############################################
+def parse_csv(line):
+    sio = StringIO(line)
+    reader = csv.reader(sio)
+    return next(reader)
 
 def time_to_segment(time):
     try:
@@ -31,30 +40,36 @@ sc = SparkSession.builder \
 
 rdd = sc.textFile(DATA_CSV_PATH)
 
-##############################
-# Querying
-##############################
-column_names = rdd.first()
+column_names = parse_csv(rdd.first())
 premis_desc_index = column_names.index("Premis Desc")
 time_occ_index = column_names.index("TIME OCC")
 
+##############################
+# Querying
+##############################
 results = (rdd
+           .map(parse_csv)
            .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
            .map(lambda row: time_to_segment(row[time_occ_index]))
-           .countByValue())
+	   .countByValue())
 
 # We could have done this since we only have 4 results. No need for distributed computing.
 # However, we will do the sorting again using RDD just for demonstration purposes.
+print("\n" + "#" * 100)
 print(dict(sorted(results.items(), key=lambda item: item[1], reverse=True)))
+print("#" * 100 + "\n")
 
 # For demonstration purposes, sorting with rdd as well.
-counts_rdd = sc.parallelize(results).sortBy(lambda x: x[1], ascending=False)
-print(counts_rdd.take(5))
+counts_rdd = sc.parallelize(list(results.items())).sortBy(lambda x: x[1], ascending=False).take(5)
+print("\n" + "#" * 100)
+print(counts_rdd)
+print("#" * 100 + "\n")
 
 # This is an alternative way to apply the sorting on the first rdd chain.
 # However, optimizations in 'countByValue' method which was used earlier
 # make it much more efficient than this.
 # results = (rdd
+#            .map(parse_csv)
 #            .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
 #            .map(lambda row: (time_to_segment(row[time_occ_index]), 1))
 #            .reduceByKey(lambda a, b: a + b)
