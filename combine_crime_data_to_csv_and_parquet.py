@@ -12,6 +12,11 @@ spark.sparkContext.setLogLevel("ERROR")
 
 df1 = spark.read.csv(f"hdfs://master:9000/{DATA_PATH}{FILE_1}.csv", header=True, inferSchema=True)
 df2 = spark.read.csv(f"hdfs://master:9000/{DATA_PATH}{FILE_2}.csv", header=True, inferSchema=True)
+
+# The Area column name is followed by a space in the first data frame.
+# Making sure they are identical for the concatenation.
+df1 = df1.withColumnRenamed('AREA ', 'AREA')
+
 df = df1.union(df2)
 
 print(f"################### Schema of dataset ####################### ")
