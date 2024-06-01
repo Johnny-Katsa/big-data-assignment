@@ -43,7 +43,7 @@ def broadcast_join(crime_row):
     return combined_rows
 
 
-# Apply the join function to the primary dataset
+# Execution of the join operation
 joined_rdd = crime_data_rdd.flatMap(broadcast_join)
 
 # Printing head of result
