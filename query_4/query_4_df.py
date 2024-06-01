@@ -43,7 +43,7 @@ df_stations = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchem
 results = (df_crimes
            .filter("LON != 0.0 AND LAT != 0.0")
            .filter("100 <= `Weapon Used Cd` AND `Weapon Used Cd` <= 199")
-           .join(df_stations, df_crimes["AREA "] == df_stations["PREC"], how="inner")
+           .join(df_stations, df_crimes["AREA"] == df_stations["PREC"], how="inner")
            .withColumn("distance_km", distance_udf(col("LAT"), col("LON"), col("y"), col("x")))
            .groupBy("DIVISION")
            .agg(round(avg(col("distance_km")), 3).alias("avg_distance_km"), count("*").alias("incidents total"))
