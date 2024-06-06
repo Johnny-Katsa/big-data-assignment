@@ -11,6 +11,9 @@ spark = SparkSession.builder \
     .appName("Query 1 - DataFrame API - CSV") \
     .getOrCreate()
 
+# Clear cache for more accurate performance metrics
+spark.catalog.clearCache()
+
 df = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
 
 
