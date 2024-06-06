@@ -11,9 +11,6 @@ spark = SparkSession.builder \
     .appName("Query 1 - DataFrame API - PARQUET") \
     .getOrCreate()
 
-# Clear cache for more accurate performance metrics
-spark.catalog.clearCache()
-
 df = spark.read.parquet(DATA_PARQUET_PATH, header=True, inferSchema=True)
 
 
