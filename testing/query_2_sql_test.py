@@ -19,7 +19,7 @@ df.createOrReplaceTempView("crime_data")
 
 query = """
 
-SELECT count(*) as incidents,
+SELECT 
 CASE
 WHEN `TIME OCC` >=  500 AND `TIME OCC` <= 1159 THEN 'Morning'
 WHEN `TIME OCC` >= 1200 AND `TIME OCC` <= 1659 THEN 'Afternoon'
