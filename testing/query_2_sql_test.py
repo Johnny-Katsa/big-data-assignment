@@ -19,7 +19,7 @@ df.createOrReplaceTempView("crime_data")
 
 query = """
 
-SELECT count(*) as incidents,
+SELECT 
 CASE
 WHEN `TIME OCC` >=  500 AND `TIME OCC` <= 1159 THEN 'Morning'
 WHEN `TIME OCC` >= 1200 AND `TIME OCC` <= 1659 THEN 'Afternoon'
@@ -29,10 +29,11 @@ ELSE 'NA'
 END AS time_segment
 FROM crime_data 
 WHERE `Premis Desc` = 'STREET'
-GROUP BY time_segment 
 ORDER BY incidents DESC
 
 """
+
+# GROUP BY time_segment
 
 result = spark.sql(query)
 result.explain(True)
