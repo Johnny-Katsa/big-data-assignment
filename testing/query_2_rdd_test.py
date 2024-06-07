@@ -52,8 +52,8 @@ time_occ_index = column_names.index("TIME OCC")
 results = (rdd
            .map(parse_csv)
            .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
-           # .map(lambda row: time_to_segment(row[time_occ_index]))
-           .collect())
+           .map(lambda row: time_to_segment(row[time_occ_index])))
+           # .collect())
            # .countByValue())
 
 # print(results)
