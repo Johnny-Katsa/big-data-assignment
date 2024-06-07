@@ -51,12 +51,12 @@ time_occ_index = column_names.index("TIME OCC")
 ##############################
 results = (rdd
            .map(parse_csv)
-           .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
-           .map(lambda row: time_to_segment(row[time_occ_index]))
+           # .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
+           # .map(lambda row: time_to_segment(row[time_occ_index]))
            .collect())
            # .countByValue())
 
-print(results)
+# print(results)
 
 # We could have done this since we only have 4 results. No need for distributed computing.
 # However, we will do the sorting again using RDD just for demonstration purposes.

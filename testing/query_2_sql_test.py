@@ -35,9 +35,9 @@ ORDER BY incidents DESC
 
 # GROUP BY time_segment
 
-result = spark.sql(query)
-result.explain(True)
-result.show(1000)
+# result = spark.sql(query)
+# result.explain(True)
+# result.show(1000)
 
 
 spark.stop()
