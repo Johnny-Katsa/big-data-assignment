@@ -29,10 +29,10 @@ ELSE 'NA'
 END AS time_segment
 FROM crime_data 
 WHERE `Premis Desc` = 'STREET'
-ORDER BY incidents DESC
+
 
 """
-
+# ORDER BY incidents DESC
 # GROUP BY time_segment
 
 # result = spark.sql(query)
