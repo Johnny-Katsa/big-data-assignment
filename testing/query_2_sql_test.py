@@ -35,6 +35,7 @@ ORDER BY incidents DESC
 """
 
 result = spark.sql(query)
+result.explain(True)
 result.show(1000)
 
 
