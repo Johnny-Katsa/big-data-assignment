@@ -36,7 +36,7 @@ def time_to_segment(time):
 # Preparation
 #############################
 sc = SparkSession.builder \
-    .appName("Test - Query 2 - RDD API - CSV") \
+    .appName("Query 2 - RDD API - CSV") \
     .getOrCreate() \
     .sparkContext
 
@@ -49,32 +49,23 @@ time_occ_index = column_names.index("TIME OCC")
 ##############################
 # Querying
 ##############################
-transformed_rdd = (rdd
-                   .map(parse_csv)
-                   .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
-                   .map(lambda row: time_to_segment(row[time_occ_index])))
+results = (rdd
+           .map(parse_csv)
+           .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
+           .map(lambda row: time_to_segment(row[time_occ_index]))
+           .countByValue())
 
-# Collect the transformed data without aggregation
-results = transformed_rdd.collect()
+# We could have done this since we only have 4 results. No need for distributed computing.
+# However, we will do the sorting again using RDD just for demonstration purposes.
 print("\n" + "#" * 100)
-print(results)
+print(dict(sorted(results.items(), key=lambda item: item[1], reverse=True)))
 print("#" * 100 + "\n")
 
-
-# Perform the countByValue operation
-# results = transformed_rdd.countByValue()
-
-# # We could have done this since we only have 4 results. No need for distributed computing.
-# # However, we will do the sorting again using RDD just for demonstration purposes.
-# print("\n" + "#" * 100)
-# print(dict(sorted(results.items(), key=lambda item: item[1], reverse=True)))
-# print("#" * 100 + "\n")
-#
-# # For demonstration purposes, sorting with rdd as well.
-# counts_rdd = sc.parallelize(list(results.items())).sortBy(lambda x: x[1], ascending=False).take(5)
-# print("\n" + "#" * 100)
-# print(counts_rdd)
-# print("#" * 100 + "\n")
+# For demonstration purposes, sorting with rdd as well.
+counts_rdd = sc.parallelize(list(results.items())).sortBy(lambda x: x[1], ascending=False).take(5)
+print("\n" + "#" * 100)
+print(counts_rdd)
+print("#" * 100 + "\n")
 
 # This is an alternative way to apply the sorting on the first rdd chain.
 # However, optimizations in 'countByValue' method which was used earlier

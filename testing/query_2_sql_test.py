@@ -6,7 +6,7 @@ DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 # Preparation
 #############################
 spark = SparkSession.builder \
-    .appName("Test - Query 2 - SQL API") \
+    .appName("Query 2 - SQL API") \
     .getOrCreate()
 
 df = spark.read.csv(DATA_CSV_PATH, header=True)
@@ -19,7 +19,7 @@ df.createOrReplaceTempView("crime_data")
 
 query = """
 
-SELECT 
+SELECT count(*) as incidents,
 CASE
 WHEN `TIME OCC` >=  500 AND `TIME OCC` <= 1159 THEN 'Morning'
 WHEN `TIME OCC` >= 1200 AND `TIME OCC` <= 1659 THEN 'Afternoon'
@@ -29,14 +29,12 @@ ELSE 'NA'
 END AS time_segment
 FROM crime_data 
 WHERE `Premis Desc` = 'STREET'
-
+GROUP BY time_segment 
+ORDER BY incidents DESC
 
 """
 
-# GROUP BY time_segment
-
 result = spark.sql(query)
-# result.explain(True)
 result.show(1000)
 
 
