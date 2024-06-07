@@ -9,7 +9,7 @@ spark = SparkSession.builder \
     .appName("Query 2 - SQL API") \
     .getOrCreate()
 
-df = spark.read.csv(DATA_CSV_PATH, header=True, inferSchema=True)
+df = spark.read.csv(DATA_CSV_PATH, header=True)
 
 
 #############################
