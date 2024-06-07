@@ -42,23 +42,23 @@ sc = SparkSession.builder \
 
 rdd = sc.textFile(DATA_CSV_PATH)
 
-column_names = parse_csv(rdd.first())
-premis_desc_index = column_names.index("Premis Desc")
-time_occ_index = column_names.index("TIME OCC")
-
-##############################
-# Querying
-##############################
-transformed_rdd = (rdd
-                   .map(parse_csv)
-                   .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
-                   .map(lambda row: time_to_segment(row[time_occ_index])))
-
-# Collect the transformed data without aggregation
-results = transformed_rdd.collect()
-print("\n" + "#" * 100)
-print(results)
-print("#" * 100 + "\n")
+# column_names = parse_csv(rdd.first())
+# premis_desc_index = column_names.index("Premis Desc")
+# time_occ_index = column_names.index("TIME OCC")
+#
+# ##############################
+# # Querying
+# ##############################
+# transformed_rdd = (rdd
+#                    .map(parse_csv)
+#                    .filter(lambda row: row[premis_desc_index] == "STREET" and row != column_names)
+#                    .map(lambda row: time_to_segment(row[time_occ_index])))
+#
+# # Collect the transformed data without aggregation
+# results = transformed_rdd.collect()
+# print("\n" + "#" * 100)
+# print(results)
+# print("#" * 100 + "\n")
 
 
 # Perform the countByValue operation
