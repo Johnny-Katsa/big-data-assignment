@@ -30,7 +30,6 @@ END AS time_segment
 FROM crime_data 
 WHERE `Premis Desc` = 'STREET'
 GROUP BY time_segment 
-ORDER BY incidents DESC
 
 """
 
