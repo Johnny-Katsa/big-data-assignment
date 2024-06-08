@@ -25,7 +25,7 @@ descent_column += "END"
 # Preparation
 #####################################################################
 spark = SparkSession.builder \
-    .appName("Query 3 - SQL API - Default") \
+    .appName("Query 3 - SQL API - No hint merge") \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
