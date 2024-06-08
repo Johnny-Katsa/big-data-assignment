@@ -27,7 +27,7 @@ descent_column += "END"
 #####################################################################
 conf = SparkConf() \
     .set("spark.executor.memory", "5g") \
-    .set("spark.executor.cores", "4") \
+    .set("spark.executor.cores", "2") \
     .set("spark.driver.memory", "4g") \
     .set("spark.sql.autoBroadcastJoinThreshold", "-1")
 
