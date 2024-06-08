@@ -38,7 +38,7 @@ conf = SparkConf() \
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
-    .conf(conf=conf) \
+    .config(conf=conf) \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
