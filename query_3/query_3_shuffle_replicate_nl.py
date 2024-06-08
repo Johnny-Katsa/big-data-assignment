@@ -25,9 +25,15 @@ descent_column += "END"
 #####################################################################
 # Preparation
 #####################################################################
+conf = SparkConf() \
+    .set("spark.executor.memory", "5g") \
+    .set("spark.executor.cores", "4") \
+    .set("spark.driver.memory", "4g") \
+    .set("spark.sql.autoBroadcastJoinThreshold", "-1")
+
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
-    .config(conf=SparkConf().set("spark.executor.memory", "5g")) \
+    .config(conf=conf) \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
