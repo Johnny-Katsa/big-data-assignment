@@ -33,13 +33,12 @@ descent_column += "END"
 #     .set("spark.sql.shuffle.partitions", "100") \
 #     .set("spark.executor.memory", "4g") \
 conf = SparkConf() \
-    .set("spark.executor.cores", "2") \
-    .set("spark.sql.shuffle.partitions", "200") \
-    .set("spark.executor.memory", "3g")
+    .set("spark.sql.shuffle.partitions", "1000") \
 
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
+    .conf(conf=conf) \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
