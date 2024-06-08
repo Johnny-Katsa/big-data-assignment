@@ -30,7 +30,7 @@ conf = SparkConf() \
     .set("spark.executor.cores", "2") \
     .set("spark.driver.memory", "4g") \
     .set("spark.sql.autoBroadcastJoinThreshold", "-1") \
-    .set("spark.sql.shuffle.partitions", "number_of_partitions")
+    .set("spark.sql.shuffle.partitions", "100")
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
