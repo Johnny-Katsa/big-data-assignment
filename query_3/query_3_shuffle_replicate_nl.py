@@ -34,12 +34,11 @@ descent_column += "END"
 #     .set("spark.executor.memory", "4g") \
 conf = SparkConf() \
     .set("spark.driver.memory", "4g") \
-    .set("spark.executor.memoryOverhead", "1g") \
+    .set("spark.executor.memoryOverhead", "2g") \
     .set("spark.executor.cores", "2") \
     .set("spark.dynamicAllocation.enabled", "true") \
-    .set("spark.dynamicAllocation.minExecutors", "1") \
-    .set("spark.dynamicAllocation.maxExecutors", "10") \
-    .set("spark.sql.shuffle.partitions", "200")
+    .set("spark.sql.shuffle.partitions", "200") \
+    .set("spark.executor.memory", "3g")
 
 
 spark = SparkSession.builder \
