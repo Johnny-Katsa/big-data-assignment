@@ -24,13 +24,23 @@ descent_column += "END"
 
 #####################################################################
 # Preparation
-#####################################################################
+#####################################################################\
+#
+# .set("spark.executor.memory", "10g") \
+#     .set("spark.executor.cores", "2") \
+#     .set("spark.driver.memory", "4g") \
+#     .set("spark.sql.autoBroadcastJoinThreshold", "-1") \
+#     .set("spark.sql.shuffle.partitions", "100") \
+#     .set("spark.executor.memory", "4g") \
 conf = SparkConf() \
-    .set("spark.executor.memory", "10g") \
-    .set("spark.executor.cores", "2") \
     .set("spark.driver.memory", "4g") \
-    .set("spark.sql.autoBroadcastJoinThreshold", "-1") \
-    .set("spark.sql.shuffle.partitions", "100")
+    .set("spark.executor.memoryOverhead", "1g") \
+    .set("spark.executor.cores", "2") \
+    .set("spark.dynamicAllocation.enabled", "true") \
+    .set("spark.dynamicAllocation.minExecutors", "1") \
+    .set("spark.dynamicAllocation.maxExecutors", "10") \
+    .set("spark.sql.shuffle.partitions", "200")
+
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
