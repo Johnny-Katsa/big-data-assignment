@@ -27,7 +27,7 @@ descent_column += "END"
 #####################################################################
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
-    .config(conf=SparkConf().set("spark.driver.memory", "5g")) \
+    .config(conf=SparkConf().set("spark.executor.memory", "5g")) \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
