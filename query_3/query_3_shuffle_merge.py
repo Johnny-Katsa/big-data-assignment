@@ -25,7 +25,7 @@ descent_column += "END"
 # Preparation
 #####################################################################
 spark = SparkSession.builder \
-    .appName("Query 3 - SQL API - Default") \
+    .appName("Query 3 - SQL API - Shuffle Merge") \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
@@ -48,7 +48,7 @@ for income_direction in ["ASC", "DESC"]:
         GROUP BY LAT, LON
     ),
     crime_data_with_country_code AS (
-        SELECT {descent_column} AS victim_descent, zip_code 
+        SELECT /*+ SHUFFLE_MERGE(crime_data) */ {descent_column} AS victim_descent, zip_code 
         FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
     ),
     highest_income_country_codes AS (
