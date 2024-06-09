@@ -9,7 +9,6 @@ STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_
 #####################################################################
 spark = SparkSession.builder \
     .appName("Query 4 - Repartition Join") \
-    .config(conf=SparkConf().set("spark.executor.memory", "1g")) \
     .getOrCreate()
 
 crime_data_rdd = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).rdd
@@ -24,7 +23,7 @@ police_stations_rdd = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, in
 #####################################################################
 # Converting datasets to dictionary key-value pairs which can be repartitioned
 crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x, 'crime')))
-police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
+police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x['DR_NO'], 'station')))
 
 united = crimes_key_values.union(police_stations_key_values)
 
