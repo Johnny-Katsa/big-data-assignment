@@ -66,10 +66,10 @@ joined_data AS (
 SELECT count(*) FROM joined_data
 
 GROUP BY victim_descent
-ORDER BY count(*) DESC;
+
 
 """
-
+# ORDER BY count(*) DESC;
 
 
 result = spark.sql(query)
