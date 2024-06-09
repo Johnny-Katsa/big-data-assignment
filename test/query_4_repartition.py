@@ -41,7 +41,10 @@ united = police_stations_key_values.reduceByKey(lambda x, y: 1)
 print("\n" + "#" * 100)
 print("Some results from the second solution.")
 print("#" * 100 + "\n")
-for result in united.take(20):
+for result in united.collect():
+    print(result)
+
+for result in police_stations_key_values.collect():
     print(result)
 
 spark.stop()
