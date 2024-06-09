@@ -1,3 +1,4 @@
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
@@ -8,6 +9,7 @@ STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_
 #####################################################################
 spark = SparkSession.builder \
     .appName("Query 4 - Repartition Join") \
+    .config(conf=SparkConf().set("spark.executor.memory", "1g")) \
     .getOrCreate()
 
 crime_data_rdd = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).rdd
