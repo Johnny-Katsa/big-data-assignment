@@ -58,16 +58,19 @@ WITH distinct_revgeo AS (
 ),
 joined_data AS (
     SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ 
-           crime_data.LAT, crime_data.LON, distinct_revgeo.LAT AS d_LAT, distinct_revgeo.LON AS d_LON
+           {descent_column} AS victim_descent, zip_code 
     FROM crime_data 
     JOIN distinct_revgeo 
     ON cast(crime_data.LAT as double) = cast(distinct_revgeo.LAT as double)
     AND cast(crime_data.LON as double) = cast(distinct_revgeo.LON as double)
 
 )
-SELECT * FROM joined_data;
+SELECT count(*) FROM joined_data
 
 """
+
+# GROUP BY victim_descent
+# ORDER BY count(*) DESC;
 
 result = spark.sql(query)
 result.explain(True)
