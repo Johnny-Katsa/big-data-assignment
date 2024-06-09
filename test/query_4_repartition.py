@@ -22,8 +22,8 @@ police_stations_rdd = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, in
 # Repartitioning
 #####################################################################
 # Converting datasets to dictionary key-value pairs which can be repartitioned
-crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x, 'crime')))
-police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x['DR_NO'], 'station')))
+crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x['DR_NO'], 'crime')))
+police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
 
 united = crimes_key_values.union(police_stations_key_values)
 
