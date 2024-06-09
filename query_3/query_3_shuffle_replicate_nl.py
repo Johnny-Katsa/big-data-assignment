@@ -27,7 +27,7 @@ descent_column += "END"
 #####################################################################
 conf = SparkConf() \
     .set("spark.memory.fraction", "0.8") \
-    .set("spark.memory.storageFraction", "0.2")
+    .set("spark.memory.storageFraction", "0.8")
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
