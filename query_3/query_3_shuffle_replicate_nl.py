@@ -1,4 +1,3 @@
-from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
@@ -24,21 +23,12 @@ descent_column += "END"
 
 #####################################################################
 # Preparation
-#####################################################################\
-#
-# .set("spark.executor.memory", "10g") \
-#     .set("spark.executor.cores", "2") \
-#     .set("spark.driver.memory", "4g") \
-#     .set("spark.sql.autoBroadcastJoinThreshold", "-1") \
-#     .set("spark.sql.shuffle.partitions", "100") \
-#     .set("spark.executor.memory", "4g") \
-
-
+#####################################################################
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
     .getOrCreate()
 
-df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
+df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).repartition(4)
 df_codes = spark.read.csv(REVGEO_DATA_CSV_PATH, header=True, inferSchema=True)
 df_incomes = spark.read.csv(INCOME_DATA_CSV_PATH, header=True, inferSchema=True)
 
@@ -49,7 +39,9 @@ df_incomes.createOrReplaceTempView("incomes")
 #############################################################
 # Querying
 #############################################################
-for income_direction in ["ASC", "DESC"]:
+
+# Executing only for the lower income zip codes as SHUFFLE_REPLICATE_NL takes too long
+for income_direction in ["ASC"]:
     query = f"""
 
     WITH distinct_revgeo AS (
