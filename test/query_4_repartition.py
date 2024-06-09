@@ -26,16 +26,12 @@ police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, '
 
 united = crimes_key_values.union(police_stations_key_values)
 
-# def my_reduce(key, records):
-#     br = []
-#     bl = []
-#     for record in records:
-#         print(record)
-#
-#     return []
+
+def my_reduce(key, records):
+    return [records[0]]
 
 
-# united.reduceByKey(my_reduce)
+united = united.reduceByKey(my_reduce)
 
 # joined_rdd = ...
 
