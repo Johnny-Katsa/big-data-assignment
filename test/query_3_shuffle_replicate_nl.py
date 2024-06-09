@@ -61,13 +61,13 @@ WITH distinct_revgeo AS (
         FROM crime_data JOIN distinct_revgeo ON 
         crime_data.LAT = distinct_revgeo.LAT AND crime_data.LON = distinct_revgeo.LON
     ),
-    crime_data_with_country_code_and_income AS (
-        SELECT * FROM crime_data_with_country_code 
-        JOIN incomes ON zip_code = `Zip Code`
+    highest_income_country_codes AS (
+        SELECT `Zip Code` FROM incomes JOIN (SELECT DISTINCT(zip_code) FROM crime_data_with_country_code) 
+        ON `Zip Code` = zip_code
+        ORDER BY `Estimated Median Income` ASC 
+        LIMIT 3
     )
-    SELECT count(*) FROM crime_data_with_country_code_and_income
-    GROUP BY zip_code 
-
+    SELECT * FROM highest_income_country_codes 
 
 """
 # WHERE ZIP_CODE IN (SELECT `Zip Code` FROM highest_income_country_codes)
