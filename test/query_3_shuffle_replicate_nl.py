@@ -52,24 +52,29 @@ df_incomes.createOrReplaceTempView("incomes")
 query = f"""
 
 WITH distinct_revgeo AS (
-    SELECT LAT, LON, MIN(ZIPcode) AS zip_code
-    FROM revgeo
-    GROUP BY LAT, LON
-),
-joined_data AS (
-    SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ 
-           {descent_column} AS victim_descent, zip_code 
-    FROM crime_data 
-    JOIN distinct_revgeo USING(LAT, LON)
+        SELECT LAT, LON, MIN(ZIPcode) AS zip_code
+        FROM revgeo
+        GROUP BY LAT, LON
+    ),
+    crime_data_with_country_code AS (
+        SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
+        FROM crime_data JOIN distinct_revgeo ON 
+        crime_data.LAT = distinct_revgeo.LAT AND crime_data.LON = distinct_revgeo.LON
+    ),
+    highest_income_country_codes AS (
+        SELECT `Zip Code` FROM incomes
+        WHERE `Zip Code` IN (SELECT DISTINCT(zip_code) FROM crime_data_with_country_code)
+        ORDER BY `Estimated Median Income` ASC 
+        LIMIT 3
+    )
+    SELECT * FROM crime_data_with_country_code 
+    WHERE ZIP_CODE IN (SELECT `Zip Code` FROM highest_income_country_codes)
 
-)
-SELECT count(*) FROM joined_data
-
-GROUP BY victim_descent
 
 
 """
-# ORDER BY count(*) DESC;
+# GROUP BY victim_descent
+# ORDER BY count(*) DESC
 
 
 result = spark.sql(query)
