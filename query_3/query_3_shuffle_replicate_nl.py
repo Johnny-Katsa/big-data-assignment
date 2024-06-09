@@ -32,13 +32,10 @@ descent_column += "END"
 #     .set("spark.sql.autoBroadcastJoinThreshold", "-1") \
 #     .set("spark.sql.shuffle.partitions", "100") \
 #     .set("spark.executor.memory", "4g") \
-conf = SparkConf() \
-    .set("spark.sql.shuffle.partitions", "1000") \
 
 
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
-    .config(conf=conf) \
     .getOrCreate()
 
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
@@ -62,7 +59,8 @@ for income_direction in ["ASC", "DESC"]:
     ),
     crime_data_with_country_code AS (
         SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
-        FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
+        FROM crime_data JOIN distinct_revgeo ON 
+        crime_data.LAT = distinct_revgeo.LAT AND crime_data.LON = distinct_revgeo.LON
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
