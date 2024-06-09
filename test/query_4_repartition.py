@@ -22,27 +22,40 @@ police_stations_rdd = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, in
 #####################################################################
 # Converting datasets to dictionary key-value pairs which can be repartitioned
 crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x, 'crime')))
-# police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
-police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
+police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
 
-# united = crimes_key_values.union(police_stations_key_values)
+united = crimes_key_values.union(police_stations_key_values)
 
 
-def my_reduce(key):
-    return 1
+def my_reduce(crime_or_station_records):
+    crimes_buffer = []
+    stations_buffer = []
+    for record, tag in crime_or_station_records:
+        if tag == 'crime':
+            crimes_buffer.append(record)
+        elif tag == 'station':
+            stations_buffer.append(record)
+        else:
+            raise Exception("Unexpected tag was found!")
+
+    combined_rows = []
+    for crime in crimes_buffer:
+        for station in stations_buffer:
+            combined_rows.append((crime, station))
+
+    return combined_rows
 
 
 # united = united.reduceByKey(my_reduce)
 
-united = police_stations_key_values.groupByKey()
-
-# joined_rdd = ...
+# Collecting by key to apply reduce step of map-reduce
+joined_rdd = united.groupByKey().flatMap(my_reduce)
 
 # Printing head of result
 print("\n" + "#" * 100)
 print("Some results from the second solution.")
 print("#" * 100 + "\n")
-for result in united.collect():
-    print([t for t in result[1]])
+for result in joined_rdd.collect():
+    print(result)
 
 spark.stop()
