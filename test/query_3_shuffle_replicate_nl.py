@@ -60,9 +60,7 @@ joined_data AS (
     SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ 
            {descent_column} AS victim_descent, zip_code 
     FROM crime_data 
-    JOIN distinct_revgeo 
-    ON cast(crime_data.LAT as double) = cast(distinct_revgeo.LAT as double)
-    AND cast(crime_data.LON as double) = cast(distinct_revgeo.LON as double)
+    JOIN distinct_revgeo USING(LAT, LON)
 
 )
 SELECT * FROM joined_data
