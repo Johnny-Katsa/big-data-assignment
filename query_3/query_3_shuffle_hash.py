@@ -48,9 +48,8 @@ for income_direction in ["ASC", "DESC"]:
         GROUP BY LAT, LON
     ),
     crime_data_with_country_code AS (
-        SELECT /*+ SHUFFLE_HASH(crime_data) */ /*+ SHUFFLE_HASH(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
-        FROM crime_data 
-        JOIN distinct_revgeo USING(LAT, LON)
+        SELECT /*+ SHUFFLE_HASH(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
+        FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
@@ -62,7 +61,6 @@ for income_direction in ["ASC", "DESC"]:
     WHERE ZIP_CODE IN (SELECT `Zip Code` FROM highest_income_country_codes)
     GROUP BY victim_descent
     ORDER BY count(*) DESC
-
 
     """
 
