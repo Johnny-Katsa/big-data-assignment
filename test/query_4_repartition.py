@@ -33,7 +33,7 @@ def my_reduce(key):
 
 # united = united.reduceByKey(my_reduce)
 
-united = police_stations_key_values.reduceByKey(lambda x, y: 1)
+united = police_stations_key_values.reduceByKey(lambda x, y: ('a', 1))
 
 # joined_rdd = ...
 
