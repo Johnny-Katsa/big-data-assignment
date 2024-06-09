@@ -65,7 +65,7 @@ joined_data AS (
     AND cast(crime_data.LON as double) = cast(distinct_revgeo.LON as double)
 
 )
-SELECT * FROM joined_data LIMIT 100;
+SELECT * FROM joined_data LIMIT 10000;
 
 """
 
