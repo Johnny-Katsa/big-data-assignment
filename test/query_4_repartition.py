@@ -34,7 +34,7 @@ def my_reduce(key):
 
 # united = united.reduceByKey(my_reduce)
 
-united = police_stations_key_values.reduceByKey(lambda x, y: ('a', 1))
+united = police_stations_key_values.groupByKey()
 
 # joined_rdd = ...
 
@@ -43,9 +43,6 @@ print("\n" + "#" * 100)
 print("Some results from the second solution.")
 print("#" * 100 + "\n")
 for result in united.collect():
-    print(result)
-
-for result in police_stations_key_values.collect():
     print(result)
 
 spark.stop()
