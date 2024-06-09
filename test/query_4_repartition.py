@@ -28,7 +28,7 @@ united = crimes_key_values.union(police_stations_key_values)
 
 
 def my_reduce(key, records):
-    return [len(records)]
+    return [records]
 
 
 united = united.reduceByKey(my_reduce)
@@ -39,7 +39,7 @@ united = united.reduceByKey(my_reduce)
 print("\n" + "#" * 100)
 print("Some results from the second solution.")
 print("#" * 100 + "\n")
-for result in united.take(5):
+for result in united.take(20):
     print(result)
 
 spark.stop()
