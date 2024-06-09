@@ -50,7 +50,7 @@ for income_direction in ["ASC", "DESC"]:
     crime_data_with_country_code AS (
         SELECT /*+ SHUFFLE_HASH(crime_data) */ /*+ SHUFFLE_HASH(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
         FROM crime_data 
-        JOIN distinct_revgeo /*+ SHUFFLE_HASH */ USING(LAT, LON)
+        JOIN distinct_revgeo USING(LAT, LON)
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
