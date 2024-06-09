@@ -51,26 +51,21 @@ df_incomes.createOrReplaceTempView("incomes")
 #############################################################
 query = f"""
 
-WITH crime_data_with_descent AS (
-    SELECT *,
-           {descent_column} AS victim_descent
-    FROM crime_data
-),
-distinct_revgeo AS (
+WITH distinct_revgeo AS (
     SELECT LAT, LON, MIN(ZIPcode) AS zip_code
     FROM revgeo
     GROUP BY LAT, LON
 ),
 joined_data AS (
     SELECT /*+ SHUFFLE_REPLICATE_NL(distinct_revgeo) */ 
-           victim_descent, zip_code 
-    FROM crime_data_with_descent 
+           {descent_column} AS victim_descent, zip_code 
+    FROM crime_data 
     JOIN distinct_revgeo 
-    ON cast(crime_data_with_descent.LAT as double) = cast(distinct_revgeo.LAT as double)
-    AND cast(crime_data_with_descent.LON as double) = cast(distinct_revgeo.LON as double)
+    ON cast(crime_data.LAT as double) = cast(distinct_revgeo.LAT as double)
+    AND cast(crime_data.LON as double) = cast(distinct_revgeo.LON as double)
+
 )
 SELECT * FROM joined_data
-
 
 """
 
