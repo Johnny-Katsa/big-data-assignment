@@ -28,7 +28,7 @@ united = crimes_key_values.union(police_stations_key_values)
 
 
 def my_reduce(key, records):
-    return [records[-1]]
+    return [len(records)]
 
 
 united = united.reduceByKey(my_reduce)
