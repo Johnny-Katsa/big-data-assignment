@@ -45,7 +45,7 @@ def my_reduce(crime_or_station_records):
     combined_rows = []
     for crime in crimes_buffer:
         for station in stations_buffer:
-            combined_rows.append(crime)
+            combined_rows.append((crime, station))
 
     del crimes_buffer
     del stations_buffer
