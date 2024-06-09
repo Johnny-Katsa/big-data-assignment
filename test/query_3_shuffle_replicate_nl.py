@@ -65,7 +65,8 @@ WITH distinct_revgeo AS (
         SELECT * FROM crime_data_with_country_code 
         JOIN incomes ON zip_code = `Zip Code`
     )
-    SELECT * FROM crime_data_with_country_code_and_income 
+    SELECT count(*) FROM crime_data_with_country_code_and_income
+    GROUP BY zip_code 
 
 
 """
