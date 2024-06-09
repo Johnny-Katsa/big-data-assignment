@@ -28,7 +28,7 @@ police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, '
 
 
 def my_reduce(key):
-    return [1, 2, 3]
+    return 1
 
 
 # united = united.reduceByKey(my_reduce)
