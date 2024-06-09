@@ -43,6 +43,6 @@ print("\n" + "#" * 100)
 print("Some results from the second solution.")
 print("#" * 100 + "\n")
 for result in united.collect():
-    print(result)
+    print([t for t in result[1]])
 
 spark.stop()
