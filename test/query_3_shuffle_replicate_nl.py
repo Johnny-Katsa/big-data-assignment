@@ -61,8 +61,9 @@ joined_data AS (
            crime_data.LAT, crime_data.LON, distinct_revgeo.LAT AS d_LAT, distinct_revgeo.LON AS d_LON
     FROM crime_data 
     JOIN distinct_revgeo 
-    ON crime_data.LAT = distinct_revgeo.LAT 
-    AND crime_data.LON = distinct_revgeo.LON
+    ON cast(crime_data.LAT as double) = cast(distinct_revgeo.LAT as double)
+    AND cast(crime_data.LON as double) = cast(distinct_revgeo.LON as double)
+
 )
 SELECT * FROM joined_data LIMIT 100;
 
