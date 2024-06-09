@@ -63,12 +63,14 @@ joined_data AS (
     JOIN distinct_revgeo USING(LAT, LON)
 
 )
-SELECT * FROM joined_data
+SELECT count(*) FROM joined_data
+
+GROUP BY victim_descent
+ORDER BY count(*) DESC;
 
 """
 
-# GROUP BY victim_descent
-# ORDER BY count(*) DESC;
+
 
 result = spark.sql(query)
 result.explain(True)
