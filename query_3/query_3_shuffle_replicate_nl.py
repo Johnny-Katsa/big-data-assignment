@@ -1,3 +1,4 @@
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
@@ -24,11 +25,16 @@ descent_column += "END"
 #####################################################################
 # Preparation
 #####################################################################
+conf = SparkConf() \
+    .set("spark.memory.fraction", "0.8") \
+    .set("spark.memory.storageFraction", "0.2")
+
 spark = SparkSession.builder \
     .appName("Query 3 - SQL API - Shuffle Replicate NL") \
+    .config(conf=conf) \
     .getOrCreate()
 
-df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).repartition(4)
+df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
 df_codes = spark.read.csv(REVGEO_DATA_CSV_PATH, header=True, inferSchema=True)
 df_incomes = spark.read.csv(INCOME_DATA_CSV_PATH, header=True, inferSchema=True)
 
