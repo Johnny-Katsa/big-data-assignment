@@ -27,6 +27,8 @@ police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x['D
 
 united = crimes_key_values.union(police_stations_key_values)
 
+united = united.partitionBy(4)
+
 
 def my_reduce(crime_or_station_records):
     crimes_buffer = []
