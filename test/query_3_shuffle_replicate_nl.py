@@ -67,7 +67,7 @@ WITH distinct_revgeo AS (
         ORDER BY `Estimated Median Income` ASC 
         LIMIT 3
     )
-    SELECT * FROM crime_data_with_country_code 
+    SELECT * FROM highest_income_country_codes 
 
 
 
