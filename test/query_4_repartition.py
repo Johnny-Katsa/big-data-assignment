@@ -34,7 +34,7 @@ united = united.partitionBy(4)
 def my_reduce(crime_or_station_records):
     crimes_buffer = []
     stations_buffer = []
-    for record, tag in crime_or_station_records:
+    for record, tag in crime_or_station_records[1]:
         if tag == 'crime':
             crimes_buffer.append(record)
         elif tag == 'station':
