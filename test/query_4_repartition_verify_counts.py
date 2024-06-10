@@ -96,7 +96,7 @@ count3 = (crime_data_df
           .select('DR_NO', 'AREA')
           .join(police_stations_df
                 .withColumnRenamed("PREC", "AREA")
-                .select('OBJECTID', 'PREC'), on='AREA')
+                .select('OBJECTID', 'AREA'), on='AREA')
           .count())
 
 print(f"C1: {count1}, C2: {0}, C3: {count3}")
