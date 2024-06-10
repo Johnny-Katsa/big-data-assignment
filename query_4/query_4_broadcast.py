@@ -33,12 +33,12 @@ broadcast_stations = spark.sparkContext.broadcast(police_stations_key_values)
 # Join operations
 #####################################################################
 def broadcast_join(crime_row):
-    stations_table = broadcast_stations.value.values()
+    stations_hash_table = broadcast_stations.value
 
-    # We know there is only going to be one match here since it's a one-to-one relationship.
-    # We will work with lists, however, just for demonstration purposes of the general one-to-many case.
-    matched_station_rows = [station_row for station_row in stations_table if station_row['PREC'] == crime_row['AREA']]
-    combined_rows = [Row(**(crime_row.asDict() | matched_row.asDict())) for matched_row in matched_station_rows]
+    # We know there is only going to be one match here since it's a one-to-many relationship.
+    # A many-to-many would require more special handling, now and earlier in the broadcast stage.
+    matched_station_row = stations_hash_table.get(crime_row['AREA'])
+    combined_rows = Row(**(crime_row.asDict() | matched_station_row.asDict()))
 
     return combined_rows
 
