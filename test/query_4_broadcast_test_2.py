@@ -46,6 +46,12 @@ def broadcast_join2(crimes_partition):
 joined_rdd = crime_data_rdd.mapPartitions(broadcast_join2)
 
 # Printing part of the result to demonstrate the join.
-print(joined_rdd.count())
+first_five_rows = joined_rdd.take(100)
+print("\n" + "#" * 100)
+print("Showing first 5 rows with just a few columns for demonstration.")
+print("#" * 100 + "\n")
+print("DR_NO, AREA, DIVISION, PREC")
+for row in first_five_rows:
+    print(row['DR_NO'], row['AREA'], row['DIVISION'], row['PREC'])
 
 spark.stop()

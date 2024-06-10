@@ -46,10 +46,6 @@ def broadcast_join(crime_row):
 # Execution of the join operation
 joined_rdd = crime_data_rdd.flatMap(broadcast_join)
 
-print("\n" + "#" * 100)
-print("Showing first 5 rows with just a few columns for demonstration.")
-print("#" * 100 + "\n")
-print(joined_rdd.count())
 
 # Printing part of the result to demonstrate the join.
 first_five_rows = joined_rdd.take(5)
