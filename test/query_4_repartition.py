@@ -9,7 +9,6 @@ STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_
 #####################################################################
 spark = SparkSession.builder \
     .appName("Query 4 - Repartition Join") \
-    .config(conf=SparkConf().set("spark.memory.offHeap.enable", "true").set("spark.memory.offHeap.size", "1")) \
     .getOrCreate()
 
 crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
@@ -38,6 +37,9 @@ def my_reduce(crime_or_station_records):
     Blanas, Spyros, et al. 'A comparison of join algorithms for log processing in mapreduce.'
     Proceedings of the 2010 ACM SIGMOD International Conference on Management of data. 2010.
     """
+
+    # Collecting crime and station records into two separate buffers.
+    # Decision is made based on the tag each record carries.
     crimes_buffer = []
     stations_buffer = []
     for record, tag in crime_or_station_records[1]:
@@ -48,6 +50,8 @@ def my_reduce(crime_or_station_records):
         else:
             raise Exception("Unexpected tag was found!")
 
+    # Since all records here have the same key,
+    # we combine every crime and station combination into a single record.
     combined_rows = []
     for crime in crimes_buffer:
         for station in stations_buffer:
