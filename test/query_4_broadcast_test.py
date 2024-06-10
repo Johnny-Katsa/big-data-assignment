@@ -52,7 +52,7 @@ print("\n" + "#" * 100)
 print("Showing first 5 rows with just a few columns for demonstration.")
 print("#" * 100 + "\n")
 print("DR_NO, AREA, OBJCECTID, PREC")
-for row in joined_rdd.take(5):
+for row in first_five_rows:
     print(row['DR_NO'], row['AREA'], row['OBJECTID'], row['PREC'])
 
 spark.stop()
