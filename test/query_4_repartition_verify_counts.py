@@ -67,31 +67,33 @@ joined_rdd = united.groupByKey().flatMap(my_reduce)
 count1 = joined_rdd.count()
 
 del joined_rdd
-#
-# #####################################################################
-# #     S O L U T I O N   2
-# #####################################################################
-#
-# #####################################################################
-# # Repartitioning
-# #####################################################################
-# # Converting datasets to dictionary key-value pairs which can be repartitioned
-# crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], x))
-# police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
-#
-# # Repartitioning with the station AREA/PREC as key
-# # We have two workers with 2 cores each, so we will repartition to 4 parts.
-# crime_data_repartitioned = crimes_key_values.partitionBy(4)
-# police_stations_repartitioned = police_stations_key_values.partitionBy(4)
-#
-# #####################################################################
-# # Join operation
-# #####################################################################
-# joined_rdd = crime_data_repartitioned.join(police_stations_repartitioned)
-#
-# # Printing head of result
-# count2 = joined_rdd.count()
-#
+
+#####################################################################
+#     S O L U T I O N   2
+#####################################################################
+
+#####################################################################
+# Repartitioning
+#####################################################################
+# Converting datasets to dictionary key-value pairs which can be repartitioned
+crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], x))
+police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
+
+# Repartitioning with the station AREA/PREC as key
+# We have two workers with 2 cores each, so we will repartition to 4 parts.
+crime_data_repartitioned = crimes_key_values.partitionBy(4)
+police_stations_repartitioned = police_stations_key_values.partitionBy(4)
+
+#####################################################################
+# Join operation
+#####################################################################
+joined_rdd = crime_data_repartitioned.join(police_stations_repartitioned)
+
+# Printing head of result
+count2 = joined_rdd.count()
+
+del joined_rdd
+
 count3 = (crime_data_df
           .select('DR_NO', 'AREA')
           .join(police_stations_df
@@ -99,7 +101,7 @@ count3 = (crime_data_df
                 .select('OBJECTID', 'AREA'), on='AREA')
           .count())
 
-print(f"C1: {count1}, C2: {0}, C3: {count3}")
+print(f"C1: {count1}, C2: {count2}, C3: {count3}")
 #
 
 spark.stop()
