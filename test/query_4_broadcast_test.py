@@ -46,6 +46,10 @@ def broadcast_join(crime_row):
 # Execution of the join operation
 joined_rdd = crime_data_rdd.map(broadcast_join)
 
+first_five_rows = joined_rdd.take(5)
+print("\n" + "#" * 100)
+print("Showing first 5 rows with just a few columns for demonstration.")
+print("#" * 100 + "\n")
 # Printing head of result
 for row in joined_rdd.take(5):
     print(row['DR_NO'], row['AREA'], row['PREC'], row['OBJECTID'])
