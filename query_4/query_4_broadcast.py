@@ -53,6 +53,6 @@ print("Showing first 5 rows with just a few columns for demonstration.")
 print("#" * 100 + "\n")
 print("DR_NO, AREA, DIVISION, PREC")
 for row in first_five_rows:
-    print(row['DR_NO'], row['AREA'], row['DIVISON'], row['PREC'])
+    print(row['DR_NO'], row['AREA'], row['DIVISION'], row['PREC'])
 
 spark.stop()
