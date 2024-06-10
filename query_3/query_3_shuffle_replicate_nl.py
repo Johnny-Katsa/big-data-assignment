@@ -1,5 +1,6 @@
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, split, regexp_replace
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 INCOME_DATA_CSV_PATH = "hdfs://master:9000/data/LA_income_2015.csv"
@@ -37,6 +38,14 @@ spark = SparkSession.builder \
 df_crimes = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
 df_codes = spark.read.csv(REVGEO_DATA_CSV_PATH, header=True, inferSchema=True)
 df_incomes = spark.read.csv(INCOME_DATA_CSV_PATH, header=True, inferSchema=True)
+
+# Some zip codes are strange, eg: "90013; 90015:90015", "90015-3018", "90001; 90002".
+# Will use the first value from all these.
+df_codes = df_codes.withColumn('ZIPcode', split(col('ZIPcode'), '[;:-]').getItem(0))
+
+# The incomes have commas and a dollar sign. Converting them to numbers.
+df_incomes = df_incomes.withColumn('Estimated Median Income',
+                                   regexp_replace(col('Estimated Median Income'), '[$,]', '').cast('float'))
 
 df_crimes.createOrReplaceTempView("crime_data")
 df_codes.createOrReplaceTempView("revgeo")
