@@ -44,7 +44,7 @@ def broadcast_join(crime_row):
 
 
 # Execution of the join operation
-joined_rdd = crime_data_rdd.flatMap(broadcast_join)
+joined_rdd = crime_data_rdd.map(broadcast_join)
 
 # Printing head of result
 for row in joined_rdd.take(5):
