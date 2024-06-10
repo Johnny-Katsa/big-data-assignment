@@ -90,9 +90,9 @@ count1 = joined_rdd.count()
 # # Printing head of result
 # count2 = joined_rdd.count()
 #
-# count3 = crime_data_df.join(police_stations_df.withColumnRenamed("PREC", "AREA"), on='AREA').count()
-#
-# print(f"C1: {count1}, C2: {count2}, C3: {count3}")
+count3 = crime_data_df.join(police_stations_df.withColumnRenamed("PREC", "AREA"), on='AREA').count()
+
+print(f"C1: {count1}, C2: {0}, C3: {count3}")
 #
 
 spark.stop()
