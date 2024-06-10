@@ -12,26 +12,32 @@ spark = SparkSession.builder \
     .config(conf=SparkConf().set("spark.memory.offHeap.enable", "true").set("spark.memory.offHeap.size", "1")) \
     .getOrCreate()
 
-crime_data_rdd = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).rdd
-police_stations_rdd = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True).rdd
+crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
+police_stations_df = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True)
+
+# Extracting RDD. Will use just a few columns since the join is for demonstration purposes
+crime_data_rdd = crime_data_df.select('DR_NO', 'AREA').rdd
+police_stations_rdd = police_stations_df.select('OBJECTID', 'PREC').rdd
 
 #####################################################################
 #     S O L U T I O N   1
 #####################################################################
 
-#####################################################################
-# Repartitioning
-#####################################################################
-# Converting datasets to dictionary key-value pairs which can be repartitioned
-crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], ((x['DR_NO'], x['AREA']), 'crime')))
-police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], ((x['OBJECTID'], x['PREC']), 'station')))
+# Converting datasets to dictionary key-value pairs. The key is the join column. Also adding a
+# "tag" to each value, so the later stages can figure out which table each record has come from.
+crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x, 'crime')))
+police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
 
+# Concatenating the two RDDs to allow grouping by key, regardless of source table.
 united = crimes_key_values.union(police_stations_key_values)
-
-united = united.partitionBy(4)
 
 
 def my_reduce(crime_or_station_records):
+    """
+    Repartition join reduce function based on A.1 of
+    Blanas, Spyros, et al. 'A comparison of join algorithms for log processing in mapreduce.'
+    Proceedings of the 2010 ACM SIGMOD International Conference on Management of data. 2010.
+    """
     crimes_buffer = []
     stations_buffer = []
     for record, tag in crime_or_station_records[1]:
@@ -52,16 +58,14 @@ def my_reduce(crime_or_station_records):
     return combined_rows
 
 
-# united = united.reduceByKey(my_reduce)
-
-# Collecting by key to apply reduce step of map-reduce
+# Collecting by key to apply the reduce step of map-reduce. Reduce is applied via flatMap.
 joined_rdd = united.groupByKey().flatMap(my_reduce)
 
 # Printing head of result
 print("\n" + "#" * 100)
-print("Some results from the second solution.")
+print("Some results from the first solution.")
 print("#" * 100 + "\n")
-for result in joined_rdd.collect():
+for result in joined_rdd.take(10):
     print(result)
 
 spark.stop()
