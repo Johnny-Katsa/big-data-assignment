@@ -65,6 +65,8 @@ def my_reduce(crime_or_station_records):
 joined_rdd = united.groupByKey().flatMap(my_reduce)
 
 count1 = joined_rdd.count()
+
+del joined_rdd
 #
 # #####################################################################
 # #     S O L U T I O N   2
