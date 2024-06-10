@@ -48,6 +48,7 @@ joined_rdd = crime_data_rdd.flatMap(broadcast_join)
 
 # Printing head of result
 for row in joined_rdd.take(5):
-    print(row['DR_NO'], row['AREA'], row['PREC'], row['OBJECTID'])
+    print(row)
+    # print(row['DR_NO'], row['AREA'], row['PREC'], row['OBJECTID'])
 
 spark.stop()
