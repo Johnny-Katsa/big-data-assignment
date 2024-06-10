@@ -58,7 +58,7 @@ print("#" * 100 + "\n")
 print("DR_NO, AREA, DIVISION, PREC")
 
 # Transform the RDD into key-value pairs where the key is the column to group by (e.g., DIVISION)
-key_value_rdd = joined_rdd.map(lambda x: (x['AREA'], 1))
+key_value_rdd = joined_rdd.map(lambda x: (x['LOCATION'], 1))
 
 # Reduce by key to count occurrences
 counts_rdd = key_value_rdd.reduceByKey(lambda a, b: a + b)
