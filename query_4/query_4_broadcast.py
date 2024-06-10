@@ -46,8 +46,13 @@ def broadcast_join(crime_row):
 # Execution of the join operation
 joined_rdd = crime_data_rdd.flatMap(broadcast_join)
 
-# Printing head of result
-for row in joined_rdd.take(5):
-    print(row)
+# Printing part of the result to demonstrate the join.
+first_five_rows = joined_rdd.take(5)
+print("\n" + "#" * 100)
+print("Showing first 5 rows with just a few columns for demonstration.")
+print("#" * 100 + "\n")
+print("DR_NO, AREA, HARBOR, PREC")
+for row in first_five_rows:
+    print(row['DR_NO'], row['AREA'], row['HARBOR'], row['PREC'])
 
 spark.stop()
