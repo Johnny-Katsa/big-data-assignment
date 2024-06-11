@@ -17,6 +17,12 @@ police_stations_df = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inf
 crime_data_rdd = crime_data_df.rdd
 police_stations_rdd = police_stations_df.rdd
 
+combined_schema_fields = {field.name: field for field in crime_data_df.schema}
+for field in police_stations_df.schema:
+    combined_schema_fields[field.name] = field
+
+combined_schema = StructType(list(combined_schema_fields.values()))
+
 #####################################################################
 # Broadcasting
 #####################################################################
@@ -64,6 +70,9 @@ for row in first_five_rows:
     print(row['DR_NO'], row['AREA'], row['DIVISION'], row['PREC'])
 
 
+spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
+del joined_rdd
+
 #####################################################################
 #        S O L U T I O N   2
 #####################################################################
@@ -104,13 +113,7 @@ for row in first_five_rows:
 # from 2015 per division. We'll do this with the tables we found via the algorithms
 # and compare the results with the same query using the SQL API.
 
-combined_schema_fields = {field.name: field for field in crime_data_df.schema}
-for field in police_stations_df.schema:
-    combined_schema_fields[field.name] = field
 
-combined_schema = StructType(list(combined_schema_fields.values()))
-
-spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 #
 # joined_rdd.toDF().createOrReplaceTempView("joined_data1")
 # joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
