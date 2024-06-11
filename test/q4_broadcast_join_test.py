@@ -118,7 +118,7 @@ for joined_data in joined_data_alternatives:
     """
 
     print("\n" + "#" * 100)
-    print(spark.sql(query))
+    print(spark.sql(query).show(100))
     print("#" * 100 + "\n")
 
 spark.stop()
