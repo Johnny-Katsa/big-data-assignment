@@ -106,6 +106,10 @@ for row in first_five_rows:
     print(row['DR_NO'], row['AREA'], row['DIVISION'], row['PREC'])
 
 
+spark.createDataFrame(joined_rdd2, schema=combined_schema).createOrReplaceTempView("joined_data2")
+del joined_rdd2
+
+
 ##################################################################
 #                 V E R I F I C A T I O N
 ##################################################################
@@ -113,20 +117,16 @@ for row in first_five_rows:
 # from 2015 per division. We'll do this with the tables we found via the algorithms
 # and compare the results with the same query using the SQL API.
 
-
-#
-# joined_rdd.toDF().createOrReplaceTempView("joined_data1")
-# joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
-# crime_data_df.createOrReplaceTempView("crime_data")
-# police_stations_df.createOrReplaceTempView("police_stations")
-#
-joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
+crime_data_df.createOrReplaceTempView("crime_data")
+police_stations_df.createOrReplaceTempView("police_stations")
+joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
 
 for joined_data in joined_data_alternatives:
     query = f"""
         SELECT DIVISION, count(*) FROM {joined_data}
         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
         GROUP BY DIVISION
+        ORDER BY DIVISION
     """
 
     print("\n" + "#" * 100)
