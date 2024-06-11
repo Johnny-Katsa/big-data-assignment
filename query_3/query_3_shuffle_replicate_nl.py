@@ -56,7 +56,7 @@ df_incomes.createOrReplaceTempView("incomes")
 #############################################################
 
 # Executing only for the lower income zip codes as SHUFFLE_REPLICATE_NL takes too long
-for income_direction in ["ASC"]:
+for income_direction in ["ASC", "DESC"]:
     query = f"""
 
     WITH distinct_revgeo AS (
