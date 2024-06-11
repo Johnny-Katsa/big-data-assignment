@@ -108,7 +108,7 @@ del joined_rdd2
 
 crime_data_df.createOrReplaceTempView("crime_data")
 police_stations_df.createOrReplaceTempView("police_stations")
-joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
+joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
 
 results_for_each_solution = []
 
