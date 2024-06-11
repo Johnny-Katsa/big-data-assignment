@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession, Row
+from pyspark.sql.types import StructType
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
 STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_lat.csv"
@@ -103,8 +104,8 @@ for row in first_five_rows:
 # from 2015 per division. We'll do this with the tables we found via the algorithms
 # and compare the results with the same query using the SQL API.
 
-joined_rdd.toDF(schema=crime_data_df.schema).createOrReplaceTempView("joined_data1")
-joined_rdd2.toDF(schema=police_stations_df.schema).createOrReplaceTempView("joined_data2")
+joined_rdd.toDF(schema=StructType(crime_data_df.schema.fields + police_stations_df.schema.fields)).createOrReplaceTempView("joined_data1")
+joined_rdd2.toDF(schema=StructType(crime_data_df.schema.fields + police_stations_df.schema.fields)).createOrReplaceTempView("joined_data2")
 crime_data_df.createOrReplaceTempView("crime_data")
 police_stations_df.createOrReplaceTempView("police_stations")
 
