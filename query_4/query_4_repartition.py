@@ -1,3 +1,4 @@
+from pyspark import Row
 from pyspark.sql import SparkSession
 
 CRIME_DATA_CSV_PATH = "hdfs://master:9000/csv/Crime_Data"
@@ -54,7 +55,7 @@ def my_reduce(crime_or_station_records):
     combined_rows = []
     for crime in crimes_buffer:
         for station in stations_buffer:
-            combined_rows.append((crime, station))
+            combined_rows.append((Row(**(crime.asDict() | station.asDict()))))
 
     del crimes_buffer
     del stations_buffer
