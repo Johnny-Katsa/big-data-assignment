@@ -8,7 +8,7 @@ STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_
 # Preparation
 #####################################################################
 spark = SparkSession.builder \
-    .appName("Query 4 - Broadcast Join") \
+    .appName("Broadcast Join Verification") \
     .getOrCreate()
 
 crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
