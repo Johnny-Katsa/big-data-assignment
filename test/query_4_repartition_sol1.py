@@ -11,19 +11,8 @@ spark = SparkSession.builder \
     .appName("Repartition Join Solution 1") \
     .getOrCreate()
 
-crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
-police_stations_df = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True)
-crime_data_df = crime_data_df.select('DATE OCC', 'AREA')
-police_stations_df = police_stations_df.select('DIVISION', 'PREC')
-
-crime_data_rdd = crime_data_df.rdd
-police_stations_rdd = police_stations_df.rdd
-
-combined_schema_fields = {field.name: field for field in crime_data_df.schema}
-for field in police_stations_df.schema:
-    combined_schema_fields[field.name] = field
-
-combined_schema = StructType(list(combined_schema_fields.values()))
+crime_data_rdd = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True).select('DATE OCC', 'AREA').rdd
+police_stations_rdd = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True).select('DIVISION', 'PREC').rdd
 
 #####################################################################
 #     S O L U T I O N   1
