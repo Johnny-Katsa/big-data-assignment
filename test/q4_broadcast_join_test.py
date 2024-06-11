@@ -110,7 +110,7 @@ for field in police_stations_df.schema:
 
 combined_schema = StructType(list(combined_schema_fields.values()))
 
-print(combined_schema)
+print(spark.createDataFrame(joined_rdd, schema=combined_schema).take(10))
 #
 # joined_rdd.toDF().createOrReplaceTempView("joined_data1")
 # joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
