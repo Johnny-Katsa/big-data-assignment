@@ -56,17 +56,19 @@ for income_direction in ["ASC", "DESC"]:
         FROM revgeo
         GROUP BY LAT, LON
     ),
-    crime_data_with_country_code AS (
+    crime_data_with_country_code_2015 AS (
         SELECT /*+ BROADCAST(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
         FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
+        WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
+        AND `Vict Descent` IS NOT NULL
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
-        WHERE `Zip Code` IN (SELECT DISTINCT(zip_code) FROM crime_data_with_country_code)
+        WHERE `Zip Code` IN (SELECT DISTINCT(zip_code) FROM crime_data_with_country_code_2015)
         ORDER BY `Estimated Median Income` {income_direction} 
         LIMIT 3
     )
-    SELECT victim_descent, count(*) AS victims FROM crime_data_with_country_code 
+    SELECT victim_descent, count(*) AS victims FROM crime_data_with_country_code_2015 
     WHERE ZIP_CODE IN (SELECT `Zip Code` FROM highest_income_country_codes)
     GROUP BY victim_descent
     ORDER BY count(*) DESC
