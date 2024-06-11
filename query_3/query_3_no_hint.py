@@ -61,7 +61,7 @@ for income_direction in ["ASC", "DESC"]:
         SELECT {descent_column} AS victim_descent, zip_code 
         FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
-        AND victim_descent IS NOT NULL
+        AND `Vict Descent` IS NOT NULL
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
