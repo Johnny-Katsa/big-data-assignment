@@ -75,13 +75,6 @@ def my_reduce(crime_or_station_records):
 # Collecting by key to apply the reduce step of map-reduce. Reduce is applied via flatMap.
 joined_rdd = united.groupByKey().flatMap(my_reduce)
 
-results = joined_rdd.take(10)
-print("\n" + "#" * 100)
-print("Some results from the second solution.")
-print("#" * 100 + "\n")
-for result in results:
-    print(result)
-
 spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 del joined_rdd
 #
@@ -110,32 +103,32 @@ del joined_rdd
 # del joined_rdd2
 #
 #
-# ##################################################################
-# #                 V E R I F I C A T I O N
-# ##################################################################
-# # Verifying the join results with a simple query. We will find the number of crimes
-# # from 2015 per division. We'll do this with the tables we found via the algorithms
-# # and compare the results with the same query using the SQL API.
-#
-# crime_data_df.createOrReplaceTempView("crime_data")
-# police_stations_df.createOrReplaceTempView("police_stations")
-# joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
-#
-# results_for_each_solution = []
-#
-# for joined_data in joined_data_alternatives:
-#     query = f"""
-#         SELECT DIVISION, count(*) FROM {joined_data}
-#         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
-#         GROUP BY DIVISION
-#         ORDER BY DIVISION
-#     """
-#
-#     results_for_each_solution.append(spark.sql(query).show(100))
-#
-# for results in results_for_each_solution:
-#     print("\n" + "#" * 100)
-#     print(results)
-#     print("#" * 100 + "\n")
+##################################################################
+#                 V E R I F I C A T I O N
+##################################################################
+# Verifying the join results with a simple query. We will find the number of crimes
+# from 2015 per division. We'll do this with the tables we found via the algorithms
+# and compare the results with the same query using the SQL API.
+
+crime_data_df.createOrReplaceTempView("crime_data")
+police_stations_df.createOrReplaceTempView("police_stations")
+joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
+
+results_for_each_solution = []
+
+for joined_data in joined_data_alternatives:
+    query = f"""
+        SELECT DIVISION, count(*) FROM {joined_data}
+        WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
+        GROUP BY DIVISION
+        ORDER BY DIVISION
+    """
+
+    results_for_each_solution.append(spark.sql(query).show(100))
+
+for results in results_for_each_solution:
+    print("\n" + "#" * 100)
+    print(results)
+    print("#" * 100 + "\n")
 
 spark.stop()
