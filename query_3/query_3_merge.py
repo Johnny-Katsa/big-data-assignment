@@ -59,7 +59,7 @@ for income_direction in ["ASC", "DESC"]:
     crime_data_with_country_code_2015 AS (
         SELECT /*+ MERGE(distinct_revgeo) */ {descent_column} AS victim_descent, zip_code 
         FROM crime_data JOIN distinct_revgeo USING(LAT, LON)
-        AND `Vict Descent` IS NOT NULL
+        WHERE `Vict Descent` IS NOT NULL
     ),
     highest_income_country_codes AS (
         SELECT `Zip Code` FROM incomes
