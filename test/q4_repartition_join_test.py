@@ -13,7 +13,7 @@ spark = SparkSession.builder \
 
 crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
 police_stations_df = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True)
-crime_data_df = crime_data_df.select('DR_NO', 'AREA')
+crime_data_df = crime_data_df.select('DR_NO', 'DATE OCC', 'AREA')
 police_stations_df = police_stations_df.select('DIVISION', 'PREC')
 
 crime_data_rdd = crime_data_df.rdd
@@ -25,12 +25,9 @@ for field in police_stations_df.schema:
 
 combined_schema = StructType(list(combined_schema_fields.values()))
 
-print("!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!")
-print(combined_schema)
-
 # Extracting RDD. Will use just a few columns since the join is for demonstration purposes
-crime_data_rdd = crime_data_df.select('DR_NO', 'AREA').rdd
-police_stations_rdd = police_stations_df.select('DIVISION', 'PREC').rdd
+crime_data_rdd = crime_data_df.rdd
+police_stations_rdd = police_stations_df.rdd
 
 #####################################################################
 #     S O L U T I O N   1
