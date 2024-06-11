@@ -13,7 +13,7 @@ spark = SparkSession.builder \
 
 crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
 police_stations_df = spark.read.csv(STATION_LOCATIONS_CSV_PATH, header=True, inferSchema=True)
-crime_data_df = crime_data_df.select('DR_NO', 'DATE OCC', 'AREA')
+crime_data_df = crime_data_df.select('DATE OCC', 'AREA')
 police_stations_df = police_stations_df.select('DIVISION', 'PREC')
 
 crime_data_rdd = crime_data_df.rdd
@@ -78,58 +78,58 @@ joined_rdd = united.groupByKey().flatMap(my_reduce)
 
 spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 del joined_rdd
-
-#####################################################################
-#     S O L U T I O N   2
-#####################################################################
-
-#####################################################################
-# Repartitioning
-#####################################################################
-# Converting datasets to dictionary key-value pairs which can be repartitioned
-crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], x))
-police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
-
-# Repartitioning with the station AREA/PREC as key
-# We have two workers with 2 cores each, so we will repartition to 4 parts.
-crime_data_repartitioned = crimes_key_values.partitionBy(4)
-police_stations_repartitioned = police_stations_key_values.partitionBy(4)
-
-#####################################################################
-# Join operation
-#####################################################################
-joined_rdd2 = crime_data_repartitioned.join(police_stations_repartitioned)
-
-spark.createDataFrame(joined_rdd2, schema=combined_schema).createOrReplaceTempView("joined_data2")
-del joined_rdd2
-
-
-##################################################################
-#                 V E R I F I C A T I O N
-##################################################################
-# Verifying the join results with a simple query. We will find the number of crimes
-# from 2015 per division. We'll do this with the tables we found via the algorithms
-# and compare the results with the same query using the SQL API.
-
-crime_data_df.createOrReplaceTempView("crime_data")
-police_stations_df.createOrReplaceTempView("police_stations")
-joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
-
-results_for_each_solution = []
-
-for joined_data in joined_data_alternatives:
-    query = f"""
-        SELECT DIVISION, count(*) FROM {joined_data}
-        WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
-        GROUP BY DIVISION
-        ORDER BY DIVISION
-    """
-
-    results_for_each_solution.append(spark.sql(query).show(100))
-
-for results in results_for_each_solution:
-    print("\n" + "#" * 100)
-    print(results)
-    print("#" * 100 + "\n")
+#
+# #####################################################################
+# #     S O L U T I O N   2
+# #####################################################################
+#
+# #####################################################################
+# # Repartitioning
+# #####################################################################
+# # Converting datasets to dictionary key-value pairs which can be repartitioned
+# crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], x))
+# police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
+#
+# # Repartitioning with the station AREA/PREC as key
+# # We have two workers with 2 cores each, so we will repartition to 4 parts.
+# crime_data_repartitioned = crimes_key_values.partitionBy(4)
+# police_stations_repartitioned = police_stations_key_values.partitionBy(4)
+#
+# #####################################################################
+# # Join operation
+# #####################################################################
+# joined_rdd2 = crime_data_repartitioned.join(police_stations_repartitioned)
+#
+# spark.createDataFrame(joined_rdd2, schema=combined_schema).createOrReplaceTempView("joined_data2")
+# del joined_rdd2
+#
+#
+# ##################################################################
+# #                 V E R I F I C A T I O N
+# ##################################################################
+# # Verifying the join results with a simple query. We will find the number of crimes
+# # from 2015 per division. We'll do this with the tables we found via the algorithms
+# # and compare the results with the same query using the SQL API.
+#
+# crime_data_df.createOrReplaceTempView("crime_data")
+# police_stations_df.createOrReplaceTempView("police_stations")
+# joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
+#
+# results_for_each_solution = []
+#
+# for joined_data in joined_data_alternatives:
+#     query = f"""
+#         SELECT DIVISION, count(*) FROM {joined_data}
+#         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
+#         GROUP BY DIVISION
+#         ORDER BY DIVISION
+#     """
+#
+#     results_for_each_solution.append(spark.sql(query).show(100))
+#
+# for results in results_for_each_solution:
+#     print("\n" + "#" * 100)
+#     print(results)
+#     print("#" * 100 + "\n")
 
 spark.stop()
