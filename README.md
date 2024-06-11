@@ -1,5 +1,3 @@
-Got it! Here's your text with improved formatting:
-
 ---
 
 # Assignment for "Large Scale Data Management Systems"
