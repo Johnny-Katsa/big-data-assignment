@@ -104,7 +104,13 @@ for row in first_five_rows:
 # from 2015 per division. We'll do this with the tables we found via the algorithms
 # and compare the results with the same query using the SQL API.
 
-print(spark.createDataFrame(joined_rdd).schema)
+combined_schema_fields = {field.name: field for field in crime_data_df.schema}
+for field in police_stations_df.schema:
+    combined_schema_fields[field.name] = field
+
+combined_schema = StructType(list(combined_schema_fields.values()))
+
+print(combined_schema)
 #
 # joined_rdd.toDF().createOrReplaceTempView("joined_data1")
 # joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
