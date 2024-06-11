@@ -25,10 +25,6 @@ for field in police_stations_df.schema:
 
 combined_schema = StructType(list(combined_schema_fields.values()))
 
-# Extracting RDD. Will use just a few columns since the join is for demonstration purposes
-crime_data_rdd = crime_data_df.rdd
-police_stations_rdd = police_stations_df.rdd
-
 #####################################################################
 #     S O L U T I O N   1
 #####################################################################
@@ -37,6 +33,9 @@ police_stations_rdd = police_stations_df.rdd
 # "tag" to each value, so the later stages can figure out which table each record has come from.
 crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], (x, 'crime')))
 police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], (x, 'station')))
+
+del crime_data_rdd
+del police_stations_rdd
 
 # Concatenating the two RDDs to allow grouping by key, regardless of source table.
 united = crimes_key_values.union(police_stations_key_values)
@@ -66,7 +65,7 @@ def my_reduce(crime_or_station_records):
     combined_rows = []
     for crime in crimes_buffer:
         for station in stations_buffer:
-            combined_rows.append((crime, station))
+            combined_rows.append((Row(**(crime.asDict() | station.asDict()))))
 
     del crimes_buffer
     del stations_buffer
