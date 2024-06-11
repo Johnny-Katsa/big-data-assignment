@@ -77,32 +77,28 @@ joined_rdd = united.groupByKey().flatMap(my_reduce)
 
 spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 del joined_rdd
-#
-# #####################################################################
-# #     S O L U T I O N   2
-# #####################################################################
-#
-# #####################################################################
-# # Repartitioning
-# #####################################################################
-# # Converting datasets to dictionary key-value pairs which can be repartitioned
-# crimes_key_values = crime_data_rdd.map(lambda x: (x['AREA'], x))
-# police_stations_key_values = police_stations_rdd.map(lambda x: (x['PREC'], x))
-#
-# # Repartitioning with the station AREA/PREC as key
-# # We have two workers with 2 cores each, so we will repartition to 4 parts.
-# crime_data_repartitioned = crimes_key_values.partitionBy(4)
-# police_stations_repartitioned = police_stations_key_values.partitionBy(4)
-#
-# #####################################################################
-# # Join operation
-# #####################################################################
-# joined_rdd2 = crime_data_repartitioned.join(police_stations_repartitioned)
-#
-# spark.createDataFrame(joined_rdd2, schema=combined_schema).createOrReplaceTempView("joined_data2")
-# del joined_rdd2
-#
-#
+
+#####################################################################
+#     S O L U T I O N   2
+#####################################################################
+
+#####################################################################
+# Repartitioning
+#####################################################################
+# Repartitioning with the station AREA/PREC as key
+# We have two workers with 2 cores each, so we will repartition to 4 parts.
+crime_data_repartitioned = crimes_key_values.partitionBy(4)
+police_stations_repartitioned = police_stations_key_values.partitionBy(4)
+
+#####################################################################
+# Join operation
+#####################################################################
+joined_rdd2 = crime_data_repartitioned.join(police_stations_repartitioned)
+
+spark.createDataFrame(joined_rdd2, schema=combined_schema).createOrReplaceTempView("joined_data2")
+del joined_rdd2
+
+
 ##################################################################
 #                 V E R I F I C A T I O N
 ##################################################################
