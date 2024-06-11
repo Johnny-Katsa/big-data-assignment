@@ -104,7 +104,7 @@ for row in first_five_rows:
 # from 2015 per division. We'll do this with the tables we found via the algorithms
 # and compare the results with the same query using the SQL API.
 
-print(joined_rdd.take(10))
+print(spark.createDataFrame(joined_rdd).schema)
 #
 # joined_rdd.toDF().createOrReplaceTempView("joined_data1")
 # joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
