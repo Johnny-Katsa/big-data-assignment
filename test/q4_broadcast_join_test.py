@@ -121,6 +121,8 @@ crime_data_df.createOrReplaceTempView("crime_data")
 police_stations_df.createOrReplaceTempView("police_stations")
 joined_data_alternatives = ["joined_data1", "joined_data2", "crime_data JOIN police_stations ON AREA = PREC"]
 
+results_for_each_solution = []
+
 for joined_data in joined_data_alternatives:
     query = f"""
         SELECT DIVISION, count(*) FROM {joined_data}
@@ -129,8 +131,11 @@ for joined_data in joined_data_alternatives:
         ORDER BY DIVISION
     """
 
+    results_for_each_solution.append(spark.sql(query).show(100))
+
+for results in results_for_each_solution:
     print("\n" + "#" * 100)
-    print(spark.sql(query).show(100))
+    print(results)
     print("#" * 100 + "\n")
 
 spark.stop()
