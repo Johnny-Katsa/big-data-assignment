@@ -25,6 +25,8 @@ police_stations_key_values = (police_stations_rdd
                               .map(lambda x: (x['PREC'], x))
                               .collectAsMap())
 
+del police_stations_rdd
+
 # Broadcasting the smaller table to all nodes
 broadcast_stations = spark.sparkContext.broadcast(police_stations_key_values)
 
