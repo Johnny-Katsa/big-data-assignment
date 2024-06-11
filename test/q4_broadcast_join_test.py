@@ -108,11 +108,11 @@ joined_rdd2.toDF(schema=police_stations_df.schema).createOrReplaceTempView("join
 crime_data_df.createOrReplaceTempView("crime_data")
 police_stations_df.createOrReplaceTempView("police_stations")
 
-joined_data_alternatives = ["crime_data JOIN police_stations ON AREA = PREC"]
+joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
 
 for joined_data in joined_data_alternatives:
     query = f"""
-        SELECT count(*) FROM {joined_data}
+        SELECT DIVISION, count(*) FROM {joined_data}
         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
         GROUP BY DIVISION
     """
