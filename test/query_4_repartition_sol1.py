@@ -8,7 +8,7 @@ STATION_LOCATIONS_CSV_PATH = "hdfs://master:9000/data/LAPD_Police_Stations_long_
 # Preparation
 #####################################################################
 spark = SparkSession.builder \
-    .appName("Repartition Join Verification") \
+    .appName("Repartition Join Solution 1") \
     .getOrCreate()
 
 crime_data_df = spark.read.csv(CRIME_DATA_CSV_PATH, header=True, inferSchema=True)
@@ -78,7 +78,7 @@ joined_rdd = united.groupByKey().flatMap(my_reduce)
 # Printing head of result
 results = joined_rdd.take(10)
 print("\n" + "#" * 100)
-print("Some results from the second solution.")
+print("Printing some results.")
 print("#" * 100 + "\n")
 for result in results:
     print(result)
