@@ -76,6 +76,13 @@ def my_reduce(crime_or_station_records):
 # Collecting by key to apply the reduce step of map-reduce. Reduce is applied via flatMap.
 joined_rdd = united.groupByKey().flatMap(my_reduce)
 
+results = joined_rdd.take(10)
+print("\n" + "#" * 100)
+print("Some results from the second solution.")
+print("#" * 100 + "\n")
+for result in results:
+    print(result)
+
 spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 del joined_rdd
 #
