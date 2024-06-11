@@ -69,6 +69,7 @@ for income_direction in ["ASC", "DESC"]:
     )
     SELECT victim_descent, count(*) AS victims FROM crime_data_with_country_code 
     WHERE ZIP_CODE IN (SELECT `Zip Code` FROM highest_income_country_codes)
+    AND SUBSTRING(`DATE OCC`, 7, 4) = 2015
     GROUP BY victim_descent
     ORDER BY count(*) DESC
 
