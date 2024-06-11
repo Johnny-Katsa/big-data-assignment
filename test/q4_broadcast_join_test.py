@@ -110,24 +110,24 @@ for field in police_stations_df.schema:
 
 combined_schema = StructType(list(combined_schema_fields.values()))
 
-print(spark.createDataFrame(joined_rdd, schema=combined_schema).take(10))
+spark.createDataFrame(joined_rdd, schema=combined_schema).createOrReplaceTempView("joined_data1")
 #
 # joined_rdd.toDF().createOrReplaceTempView("joined_data1")
 # joined_rdd2.toDF().createOrReplaceTempView("joined_data2")
 # crime_data_df.createOrReplaceTempView("crime_data")
 # police_stations_df.createOrReplaceTempView("police_stations")
 #
-# joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
-#
-# for joined_data in joined_data_alternatives:
-#     query = f"""
-#         SELECT DIVISION, count(*) FROM {joined_data}
-#         WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
-#         GROUP BY DIVISION
-#     """
-#
-#     print("\n" + "#" * 100)
-#     print(spark.sql(query).show(100))
-#     print("#" * 100 + "\n")
-#
+joined_data_alternatives = ["joined_data1", "crime_data JOIN police_stations ON AREA = PREC"]
+
+for joined_data in joined_data_alternatives:
+    query = f"""
+        SELECT DIVISION, count(*) FROM {joined_data}
+        WHERE SUBSTRING(`DATE OCC`, 7, 4) = 2015
+        GROUP BY DIVISION
+    """
+
+    print("\n" + "#" * 100)
+    print(spark.sql(query).show(100))
+    print("#" * 100 + "\n")
+
 spark.stop()
